@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Clínica HAES · Odontologia e estética facial em Campo Grande</title>
+    <meta
+      name="description"
+      content="Clínica HAES, em Campo Grande (MS): odontologia e estética facial com cuidado próximo. Conheça a clínica, os tratamentos e a equipe, e envie seu pré-agendamento pelo WhatsApp."
+    />
+    <!-- Protótipo demonstrativo para apresentação comercial: fora dos buscadores. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#F8F5EC" />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- Tema aplicado antes da primeira pintura. Claro por padrão; só usa escuro se a pessoa escolheu antes. -->
+    <script>
+      (function () {
+        var theme = 'light';
+        try {
+          var saved = window.localStorage.getItem('haes-theme');
+          if (saved === 'dark' || saved === 'light') theme = saved;
+        } catch (e) {}
+        document.documentElement.setAttribute('data-theme', theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#17271D' : '#F8F5EC');
+      })();
+    </script>
+
+    <!-- Boska e Satoshi (Fontshare), servidas localmente. Ver public/assets/fonts/LEIA-ME.txt -->
+    <link rel="stylesheet" href="/assets/fonts/fonts.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p style="padding:24px;font-family:sans-serif">
+        Clínica HAES · Rua Aluízio de Azevedo, 18 — Jardim Monte Líbano, Campo Grande — MS ·
+        WhatsApp (67) 99668-8933
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

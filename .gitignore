@@ -1,0 +1,12 @@
+node_modules
+dist
+*.local
+.DS_Store
+Thumbs.db
+assets-fornecidos
+capturas
+
+.claude/
+.env
+.env.*
+!.env.example

@@ -1,0 +1,28 @@
+Arquivos do site (gerados a partir de HAES-Materiais-Recuperados e dos anexos do chat).
+Os originais ficam fora do projeto e não foram alterados. Nomes diferenciam maiúsculas/minúsculas.
+
+photos/   (WebP por largura real + JPEG de fallback; nada foi ampliado)
+  recepcao-{720,1080,1440}.webp, recepcao.jpg          <- recepcao.jpg (1440x1440)
+  simbolo-parede-{720,1080,1440}.webp, simbolo-parede.jpg <- simbolo-parede.jpg (1440x1440)
+  cafe-632.webp, cafe.jpg                               <- cafe.png (632x842, baixa resolução)
+  fachada-679.webp, fachada.jpg                         <- fachada.png (679x812), recorte 5:4 (y 150-693)
+
+team/     (retratos 4:5; identificação confirmada pelo responsável em 06/11/2026)
+  danielle-{640,1122}.webp, danielle.jpg  <- anexo 1 (estúdio, blazer preto)
+  marianne-{640,1122}.webp, marianne.jpg  <- anexo 2 (clínica, jaleco bege)
+
+brand/    (fundo sólido convertido em canal alpha real; desenho não alterado)
+  haes-logo.png            <- logo-haes-marfim.jpg (texto verde + símbolo dourado)
+  haes-logo-claro.png      <- idem, texto em marfim para fundos escuros (como a variante oficial verde)
+  haes-logo-nav.png        <- idem, sem a linha "Odontologia e Saúde" (navbar)
+  haes-logo-nav-claro.png  <- idem, texto em marfim
+  haes-simbolo.png         <- simbolo-haes.jpg (usado como máscara no dourado do tema)
+  or7-logo.png             <- anexo 4 (PNG com alpha original, apenas recortado)
+
+Não usados no site: detalhes-ambiente.jpg, placa-haes.jpg (mockup), conceito-simbolo-haes.jpg,
+marca-circular-haes.jpg, logo-haes-verde.jpg, logo-haes-original.png (150px),
+referencia-simbolo-gemini.mp4 (só referência de movimento).
+
+Enquadramento: object-position de cada foto em src/data/clinic.ts.
+SVG oficial do símbolo: quando existir, salve como brand/haes-simbolo.svg e defina
+brand.symbolSvg = 'brand/haes-simbolo.svg' em src/data/clinic.ts.

@@ -1,0 +1,102 @@
+/* Tokens da Clínica HAES. Valores aprovados no briefing; derivados ficam marcados. */
+
+:root {
+  /* Cores — tema claro (padrão) */
+  --bg: #f8f5ec;
+  --surface: #efeadf;
+  --text: #243c2d;
+  --cta-bg: #2d4934;
+  --cta-text: #f8f5ec;
+  --gold: #9c7b47;
+
+  /* Derivados */
+  --text-soft: color-mix(in srgb, var(--text) 80%, var(--bg));
+  --border: color-mix(in srgb, var(--text) 14%, transparent);
+  --border-strong: color-mix(in srgb, var(--text) 26%, transparent);
+  --nav-surface: color-mix(in srgb, var(--bg) 88%, transparent);
+  --placeholder: color-mix(in srgb, var(--text) 7%, var(--surface));
+  --focus: var(--text);
+  --scroll-track: color-mix(in srgb, var(--text) 6%, var(--bg));
+  --scroll-thumb: #2d4934;
+  --shadow-soft: 0 1px 2px rgb(36 60 45 / 0.06), 0 12px 32px -18px rgb(36 60 45 / 0.28);
+
+  /* Rodapé: igual nos dois temas */
+  --footer-bg: #17271d;
+  --footer-text: #f8f5ec;
+  --footer-gold: #c7ad7e;
+
+  /* Tipografia */
+  --font-display: 'Boska', 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  --font-body: 'Satoshi', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --fs-body: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
+  --fs-small: 0.9375rem;
+  --fs-eyebrow: 0.8125rem;
+  --fs-h1: clamp(2.75rem, 1.55rem + 4.6vw, 5.5rem);
+  /* hero: 42–56 px no celular, ~88 px em 1440 px */
+  --fs-hero: clamp(2.625rem, 1.25rem + 5.2vw, 6rem);
+  /* títulos secundários menores que o hero, como na referência */
+  --fs-h2: clamp(2rem, 1.45rem + 1.7vw, 3.25rem);
+  --fs-h3: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+  --lh-body: 1.6;
+
+  /* Layout */
+  --container: 1280px;
+  --gutter: 20px;
+  --section-space: clamp(4rem, 2.6rem + 5.2vw, 8.5rem);
+  --nav-top: 16px;
+  --nav-height: 64px;
+  --anchor-offset: calc(var(--nav-top) + var(--nav-height) + 20px);
+
+  /* Raios: orgânicos nas fotos, contidos nos cards */
+  --radius-card: 14px;
+  --radius-control: 10px;
+  --radius-pill: 999px;
+  --radius-arch: 999px 999px 28px 28px;
+  --radius-leaf: 28px 160px 28px 160px;
+  --radius-leaf-sm: 18px 96px 18px 96px;
+
+  /* Movimento */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --theme-duration: 220ms;
+
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg: #17271d;
+  --surface: #2d4934;
+  --text: #f8f5ec;
+  --cta-bg: #f8f5ec;
+  --cta-text: #243c2d;
+  --gold: #c7ad7e;
+
+  --text-soft: color-mix(in srgb, var(--text) 84%, var(--bg));
+  --border: color-mix(in srgb, var(--text) 16%, transparent);
+  --border-strong: color-mix(in srgb, var(--text) 30%, transparent);
+  --nav-surface: color-mix(in srgb, var(--bg) 86%, transparent);
+  --placeholder: color-mix(in srgb, var(--text) 6%, var(--surface));
+  --scroll-track: color-mix(in srgb, var(--text) 5%, var(--bg));
+  --scroll-thumb: color-mix(in srgb, #c7ad7e 70%, var(--bg));
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.2), 0 16px 36px -20px rgb(0 0 0 / 0.55);
+
+  color-scheme: dark;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+
+@media (min-width: 1100px) {
+  :root {
+    --nav-top: 24px;
+    --nav-height: 72px;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --gutter: 64px;
+  }
+}

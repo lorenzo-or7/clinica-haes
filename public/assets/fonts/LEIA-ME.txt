@@ -1,0 +1,9 @@
+Arquivos esperados nesta pasta (Fontshare, licença ITF Free Font License):
+
+  Boska-Medium.woff2
+  Boska-MediumItalic.woff2
+  Satoshi-Regular.woff2
+  Satoshi-Medium.woff2
+  + o arquivo de licença incluído no download (ex.: FFL.txt)
+
+Os nomes diferenciam maiúsculas e minúsculas no GitHub Pages.
