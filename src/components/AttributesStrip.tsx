@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
 import { attributes } from '../data/clinic';
 import { Access, Clock, Pin, Tooth } from './ui/Icons';
@@ -29,8 +30,24 @@ function Items({ hidden }: { hidden?: boolean }) {
  */
 export function AttributesStrip() {
   const reduce = useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+  const [onScreen, setOnScreen] = useState(true);
+
+  // a faixa só desliza enquanto está na tela
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <section className={`strip ${reduce ? 'strip--static' : ''}`} aria-label="Sobre o atendimento">
+    <section
+      ref={ref}
+      className={`strip ${reduce ? 'strip--static' : ''} ${onScreen ? '' : 'strip--paused'}`}
+      aria-label="Sobre o atendimento"
+    >
       <div className="strip__viewport">
         <div className="strip__track">
           <Items />

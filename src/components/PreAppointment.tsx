@@ -39,10 +39,10 @@ export function PreAppointment({ treatment, onTreatmentChange }: Props) {
         <div className="booking__intro">
           <p className="eyebrow">Pré-agendamento</p>
           <h2 id="booking-title" tabIndex={-1}>
-            Conte o que você procura.
+            Pré-agende sua avaliação.
           </h2>
           <p className="lead">
-            Conte o que procura e envie sua preferência. A equipe confirma os detalhes pelo WhatsApp.
+            Escolha um assunto e, se quiser, uma data de preferência. Todos os campos são opcionais.
           </p>
           <HaesSymbol className="booking__symbol" />
         </div>

@@ -86,10 +86,18 @@ export const Instagram = (p: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+/**
+ * Ícone único de WhatsApp: balão com cauda e fone, viewBox 24×24, traço uniforme.
+ * Usado em todos os links de WhatsApp (navbar, localização, rodapé, formulário).
+ */
 export const WhatsApp = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base(p)}>
-    <path d="M4 20l1.2-3.6A8 8 0 1 1 8 19.1L4 20Z" />
-    <path d="M9.2 8.6c.2-.4.5-.4.8-.4h.5c.2 0 .4.1.5.4l.6 1.4c.1.2 0 .5-.1.6l-.5.6c.6 1.1 1.5 2 2.6 2.6l.6-.5c.2-.2.4-.2.6-.1l1.4.6c.3.1.4.3.4.5v.5c0 .3 0 .6-.4.8-.6.4-1.5.5-2.3.2a8 8 0 0 1-4.4-4.4c-.3-.8-.2-1.7.2-2.3Z" />
+    <path d="M12 3.25a8.75 8.75 0 0 0-7.55 13.16L3.25 20.75l4.46-1.17A8.75 8.75 0 1 0 12 3.25Z" />
+    <path
+      transform="translate(7.6 7.6) scale(0.37)"
+      strokeWidth={4.2}
+      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"
+    />
   </svg>
 );
 

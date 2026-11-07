@@ -69,6 +69,18 @@ export const photos = {
   ),
 };
 
+/** Recortes novos para reduzir a repetição das mesmas fotos entre seções. */
+export const crops = {
+  ripas: {
+    sources: ['photos/parede-ripas.webp', 'photos/parede-ripas.jpg'],
+    width: 440,
+    height: 440,
+    alt: 'Ripas de madeira e luz na parede da clínica',
+    position: '50% 50%',
+    pending: 'Foto: ripas',
+  } satisfies PhotoSource,
+};
+
 export type HeroSlide = {
   id: string;
   title: string;
@@ -125,13 +137,13 @@ export const attributes = [
   { icon: 'access', label: 'Entrada acessível' },
 ] as const;
 
-/** Galeria de detalhes reais (função da faixa social da referência). */
-export const gallery = [
-  photos.recepcao,
-  photos.cafe,
-  photos.simboloParede,
-  photos.detalhes,
-  photos.fachada,
+/** Galeria de detalhes reais, com recortes diferentes dos usados no hero e na visita. */
+export const gallery: { photo: PhotoSource; position?: string }[] = [
+  { photo: photos.recepcao, position: '18% 60%' },
+  { photo: photos.cafe, position: '50% 78%' },
+  { photo: crops.ripas },
+  { photo: photos.detalhes, position: '30% 30%' },
+  { photo: photos.fachada, position: '62% 50%' },
 ];
 
 /**
@@ -144,7 +156,8 @@ export const brand = {
   logo: { light: 'brand/haes-logo.png', dark: 'brand/haes-logo-claro.png', width: 854, height: 152 },
   logoNav: { light: 'brand/haes-logo-nav.png', dark: 'brand/haes-logo-nav-claro.png', width: 854, height: 152 },
   symbolSvg: null as string | null,
-  symbol: { src: 'brand/haes-simbolo.png', width: 395, height: 250 },
+  /** Contorno vetorizado do raster oficial (nítido em qualquer tamanho); o PNG segue em brand/. */
+  symbol: { src: 'brand/haes-simbolo-tracado.svg', width: 395, height: 250 },
   or7: { src: 'brand/or7-logo.png', width: 1842, height: 252 },
 };
 
@@ -184,6 +197,22 @@ export const mapsRouteUrl = `https://www.google.com/maps/dir/?api=1&destination=
   `${address.street}, ${address.district}, ${address.city} - ${address.state}, ${address.zip}`,
 )}`;
 
+/**
+ * Ficha do Google conferida em 06/11/2026: "Clínica Haes", Rua Aluízio de Azevedo, 18 -
+ * Jardim Monte Líbano, Campo Grande - MS, 79004-050, (67) 99668-8933, nota 5,0 com 8 avaliações.
+ * Pin: -20.4800255, -54.6106825 (plus code G99Q+XP).
+ */
+export const googlePlace = {
+  rating: '5,0',
+  reviews: 8,
+  checkedAt: '06/11/2026',
+  url: 'https://www.google.com/maps/place/Cl%C3%ADnica+Haes/@-20.4800255,-54.6106825,17z/data=!4m6!3m5!1s0x9486e7006acff3cd:0xa49a075927f67f92!8m2!3d-20.4800255!4d-54.6106825!16s%2Fg%2F11yqs5d9d0',
+  embed: `https://www.google.com/maps?q=${encodeURIComponent(
+    'Clínica Haes, Rua Aluízio de Azevedo, 18 - Jardim Monte Líbano, Campo Grande - MS',
+  )}&ll=-20.4800255,-54.6106825&z=17&output=embed`,
+};
+
+/** Número e URL do WhatsApp centralizados: todos os links do site usam esta função. */
 export const whatsappUrl = (text?: string) =>
   `https://wa.me/${clinic.whatsapp.number}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
 
@@ -270,11 +299,82 @@ export const treatmentCategories = [
   'Harmonização facial',
 ];
 
-/** Informação curta disponível por categoria (sem preço, duração ou popularidade). */
-export const categoryInfo: Record<string, string> = {
-  Clareamento: 'Em consultório ou caseiro supervisionado',
-  'Harmonização facial': 'Toxina botulínica e preenchimento facial',
+/**
+ * Guia do catálogo: as 10 categorias em quatro caminhos. Frases em linguagem comum,
+ * propostas para revisão da clínica (explicam a categoria; não prometem resultado).
+ */
+export type CatalogItem = {
+  name: string;
+  info: string;
+  /** Opções do formulário dentro da categoria (Harmonização facial). */
+  options?: string[];
 };
+
+export type CatalogGroup = {
+  id: string;
+  title: string;
+  lead: string;
+  art: string;
+  /**
+   * Gravura ilustrativa do grupo (1774×887, ~2:1; decorativa, não é demonstração clínica).
+   * Enquadramento usado só quando o contêiner não é 2:1.
+   */
+  artPosition: string;
+  items: CatalogItem[];
+};
+
+export const catalogGroups: CatalogGroup[] = [
+  {
+    id: 'rotina',
+    title: 'Rotina e prevenção',
+    lead: 'Consultas e cuidados que acompanham a saúde da boca ao longo do tempo.',
+    art: 'guia-rotina-prevencao',
+    artPosition: '50% 50%',
+    items: [
+      { name: 'Clínica geral', info: 'Consulta e avaliação da saúde da boca' },
+      { name: 'Limpeza', info: 'Remoção de placa e tártaro' },
+    ],
+  },
+  {
+    id: 'saude',
+    title: 'Saúde bucal',
+    lead: 'Tratamentos para gengiva, canal e dentes que precisam sair.',
+    art: 'guia-saude-bucal',
+    artPosition: '50% 50%',
+    items: [
+      { name: 'Periodontia', info: 'Cuidado com a gengiva e o que sustenta os dentes' },
+      { name: 'Endodontia', info: 'Tratamento de canal' },
+      { name: 'Extrações', info: 'Remoção de dentes, quando indicada' },
+    ],
+  },
+  {
+    id: 'reabilitacao',
+    title: 'Reabilitação e alinhamento',
+    lead: 'Para repor dentes perdidos ou alinhar o sorriso.',
+    art: 'guia-reabilitacao-alinhamento',
+    artPosition: '50% 50%',
+    items: [
+      { name: 'Próteses', info: 'Reposição de dentes perdidos' },
+      { name: 'Implantes', info: 'Raiz artificial para repor um dente' },
+      { name: 'Aparelhos ortodônticos', info: 'Alinhamento dos dentes com aparelho' },
+    ],
+  },
+  {
+    id: 'estetica',
+    title: 'Estética do sorriso e da face',
+    lead: 'Clareamento e harmonização facial, sempre a partir de uma avaliação individual.',
+    art: 'guia-estetica-sorriso-face',
+    artPosition: '58% 40%',
+    items: [
+      { name: 'Clareamento', info: 'Em consultório ou caseiro supervisionado' },
+      {
+        name: 'Harmonização facial',
+        info: 'Inclui toxina botulínica e preenchimento facial',
+        options: ['Toxina botulínica', 'Preenchimento facial'],
+      },
+    ],
+  },
+];
 
 export const GENERAL_EVALUATION = 'Quero uma avaliação';
 
@@ -385,7 +485,7 @@ export const pendencias = [
   'Aprovação de semelhança dos retratos editados por IA pelas profissionais (identificação confirmada pelo responsável).',
   'Fotos do café (632×842) e da fachada (679×812) em baixa resolução: substituir por originais maiores quando houver.',
   'Intervalo de almoço: a arte anterior indicava pausa; a ficha mais recente informa 08h às 18h sem intervalo.',
-  'Pin exato no mapa (hoje a rota usa o endereço).',
+  'Contagem de avaliações (8 no Google em 06/11/2026) muda com o tempo: revisar antes de publicar.',
   'Processo clínico da primeira consulta (duração, custo, exames).',
   'Confirmação atual de campanhas; bioestimulador e ultrassom Visage fora da oferta pública até confirmação.',
   'Revisão das descrições propostas de tratamentos e da visita guiada.',

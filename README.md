@@ -4,6 +4,39 @@ Site de página única para apresentação comercial às proprietárias da Clín
 
 React + TypeScript + Vite, CSS com tokens e Motion para animações. Sem backend: o pré-agendamento monta uma mensagem e abre o WhatsApp da clínica.
 
+## Versão 4: identidade, guia ilustrado e movimento (07/11/2026)
+
+- **Guia do catálogo:** quatro gravuras próprias (`arts/guia-*-{880,1600}.webp`, a partir dos PNGs de 1774×887, sem ampliar), em contêiner 2:1, sem corte, no desktop e no celular. As camadas trocam por crossfade, e título, frase e tratamentos entram juntos. A gravura aparece por máscara na primeira vez que entra na tela.
+- **Avaliações compactas:** sem a foto do difusor, um depoimento por vez, autor e controles logo abaixo. Nota, contagem e link do Google mantidos. A troca dura 0,22 s, sem sobreposição.
+- **A identidade HAES** (`HaesIdentity.tsx` + `styles/identity.css`): capítulo próprio em verde profundo nos dois temas, com palco fixo na tela (position: sticky) dentro de uma seção de 320svh (260svh no celular): a rolagem nativa continua, mas enquanto o palco está fixo ela só avança a animação; a animação termina em 84% do percurso e o símbolo dourado fica um instante antes de a página seguir. Com movimento reduzido, não há palco fixo. Em quatro atos: o símbolo é traçado folha a folha; o C acende com aura e um "C" gigante em contorno; o mesmo com o H; o símbolo assume o dourado em degradê, com halo e um anel que se expande. Um índice de três fases ao lado do texto acompanha o progresso. Todas as camadas recortam os pixels do raster oficial; os traços servem só como guia da ordem de desenho.
+- **Movimento:** máscara lateral na foto da fachada, máscara de baixo para cima na galeria (em sequência), parallax leve no convite, na fachada e na gravura do FAQ (contido no enquadramento, menor no celular). A equipe entra com o título primeiro e os retratos em seguida. Setas dos botões se deslocam no hover. A faixa de atributos pausa fora da tela.
+- **Segurança de visibilidade:** as revelações usam IntersectionObserver com rede de segurança (revelam após 4 s se o elemento já estiver na tela). Com `prefers-reduced-motion`, máscaras, parallax e destaques ficam desligados, e o símbolo aparece completo em dourado.
+
+### Nitidez do símbolo
+O símbolo usado no site (identidade, hero, selo da clínica, pré-agendamento) agora é o contorno vetorizado automaticamente do raster oficial (`brand/haes-simbolo-tracado.svg` e `src/data/symbolPath.ts`, potrace sobre o canal alpha ampliado 6× e suavizado). Cobre 99,3% da área do original, com interseção/união de 0,93. Não é redesenho nem o SVG oficial: segue os pixels existentes, então pequenas variações de espessura do arquivo de origem continuam. O PNG original segue em `brand/`.
+
+### Pendências desta versão
+- `toxina-verde.png` não foi encontrado (nem em Downloads, nem no pacote, nem entre os anexos). O card da toxina continua com a arte marfim.
+- Os destaques C e H são máscaras sobre o raster oficial, aproximadas a partir da prancha "Letra C / Letra H". Precisam da aprovação da clínica e, idealmente, do SVG oficial.
+- Não testei o movimento reduzido em navegador: o painel do Claude não emula essa preferência.
+
+## Versão 3: refinamento editorial (06/11/2026)
+
+- **Navbar:** sem cápsula de vidro. Sobre o hero, uma faixa leve com degradê só para contraste. Depois do hero, uma barra compacta de 60 px nas cores do tema. O link da seção visível ganha um sublinhado curto, e a moldura da folha deslizante ficou mais simples.
+- **Trilho de tratamentos:** gravuras próprias nos quatro cards (`public/assets/arts/`), com recorte individual. Os textos e o "10" continuam em HTML, e as imagens são decorativas.
+- **Pausa editorial** ("Uma conversa é o primeiro passo."): texto à esquerda, recorte da foto da parede à direita com o símbolo inteiro. A foto se revela pela lateral uma vez.
+- **Catálogo como guia** ("O que você quer cuidar?"): quatro caminhos. No desktop, índice com abas acessíveis; no celular, acordeão. Cada tratamento tem uma frase em linguagem comum.
+- **Localização:** mapa do Google com o pin da ficha da clínica, foto da fachada, "Como chegar" como link próprio.
+- **WhatsApp:** um único ícone SVG em todos os links. O número e a URL ficam em `whatsappUrl()` no `clinic.ts`.
+- **Avaliações:** "Ver avaliações no Google", com nota 5,0 e 8 avaliações conferidas na ficha em 06/11/2026.
+- **Menos repetição de fotos:** recortes novos (difusor, ripas, parede) e gravura no convite do FAQ. A galeria usa enquadramentos diferentes.
+
+### Pendências desta versão
+- Fotos reais dos consultórios e do atendimento, para variar mais as seções.
+- As frases dos tratamentos no guia são propostas e precisam da revisão da clínica.
+- A ficha do Google tem um quarto depoimento (Chrisitiane Camargo) que não foi incluído, porque não estava entre os aprovados.
+- `catalogo.png` não estava em disco. A gravura do quarto card veio da imagem anexada no chat.
+
 ## Versão 2: estrutura e movimento com referência Lumiera (06/11/2026)
 
 Reformulação autorizada para aproximar estrutura, composição e comportamento da referência https://lumiera.framer.website/, com identidade, conteúdo e fotos da HAES. O mapeamento completo e os movimentos medidos estão em [REFERENCIA-LUMIERA.md](REFERENCIA-LUMIERA.md).
@@ -101,7 +134,7 @@ A observação completa e o mapeamento estão em [REFERENCIA-LUMIERA.md](REFEREN
 - **Retratos editados por IA:** falta a aprovação de semelhança pelas profissionais.
 - **Fotos do café e da fachada:** baixa resolução de origem. Podem ficar suaves em telas grandes.
 - **Intervalo de almoço:** a arte anterior indicava pausa, mas a ficha mais recente diz 08h às 18h. O site usa a ficha.
-- **Pin exato do mapa:** a rota é feita pelo endereço, pela URL oficial do Google Maps.
+- **Contagem de avaliações:** 8 no Google em 06/11/2026; o número muda com o tempo.
 - **Processo clínico da primeira consulta:** não confirmado. O site não cita duração, custo nem exames.
 - **Campanhas:** bioestimulador e ultrassom Visage ficam fora da oferta pública até confirmação.
 - **Textos propostos:** falta a revisão da clínica (tratamentos, visita guiada, passos da primeira visita).

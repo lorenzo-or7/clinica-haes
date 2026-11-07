@@ -30,6 +30,37 @@ function useOverHero() {
   return over;
 }
 
+/** Seção visível no centro da tela, para o sublinhado discreto do link ativo. */
+const SPY: Record<string, string> = {
+  clinica: '#clinica',
+  tratamentos: '#tratamentos',
+  catalogo: '#tratamentos',
+  equipe: '#equipe',
+  localizacao: '#localizacao',
+};
+
+function useActiveSection() {
+  const [active, setActive] = useState<string | null>(null);
+  useEffect(() => {
+    if (!('IntersectionObserver' in window)) return;
+    const seen = new Map<string, boolean>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => seen.set(e.target.id, e.isIntersecting));
+        const current = Object.keys(SPY).find((id) => seen.get(id));
+        setActive(current ? SPY[current] : null);
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    Object.keys(SPY).forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+    return () => io.disconnect();
+  }, []);
+  return active;
+}
+
 type Props = {
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
@@ -39,6 +70,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1
 
 export function Navbar({ theme, onThemeChange }: Props) {
   const overHero = useOverHero();
+  const activeHref = useActiveSection();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -110,7 +142,13 @@ export function Navbar({ theme, onThemeChange }: Props) {
             <ul>
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <a href={link.href}>{link.label}</a>
+                  <a
+                    href={link.href}
+                    className={activeHref === link.href ? 'is-active' : undefined}
+                    aria-current={activeHref === link.href ? 'location' : undefined}
+                  >
+                    {link.label}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -133,7 +171,7 @@ export function Navbar({ theme, onThemeChange }: Props) {
             rel="noopener noreferrer"
             aria-label={`Conversar pelo WhatsApp ${clinic.whatsapp.display} (abre em nova aba)`}
           >
-            <WhatsApp width={21} height={21} />
+            <WhatsApp width={20} height={20} />
           </a>
         </div>
       </div>

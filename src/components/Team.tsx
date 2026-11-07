@@ -12,14 +12,17 @@ export function Team() {
   return (
     <section id="equipe" className="section team" aria-labelledby="team-title">
       <div className="container">
-        <Reveal className="center-head">
+        <Reveal className="center-head" y={20}>
           <p className="eyebrow eyebrow--center">Equipe</p>
           <h2 id="team-title">Quem recebe você na HAES.</h2>
-          <p>As duas cirurgiãs-dentistas atendem em Campo Grande, MS.</p>
+          <p>
+            A HAES é conduzida por duas cirurgiãs-dentistas em Campo Grande: a Dra. Danielle Yahn, responsável
+            técnica, e a Dra. Marianne Tavares, especialista em Dentística e co-proprietária.
+          </p>
         </Reveal>
         <div className="team__grid">
           {team.map((person, i) => (
-            <Reveal key={person.id} delay={i * 0.1}>
+            <Reveal key={person.id} delay={0.15 + i * 0.14} y={40}>
               <TeamMember person={person} />
             </Reveal>
           ))}

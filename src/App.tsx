@@ -10,6 +10,7 @@ import { Treatments } from './components/Treatments';
 import { WideCta } from './components/WideCta';
 import { Catalog } from './components/Catalog';
 import { Gallery } from './components/Gallery';
+import { HaesIdentity } from './components/HaesIdentity';
 import { Team } from './components/Team';
 import { Reviews } from './components/Reviews';
 import { FAQ } from './components/FAQ';
@@ -48,6 +49,7 @@ export default function App() {
         <Treatments onRequest={requestTreatment} />
         <WideCta />
         <Catalog onRequest={requestTreatment} />
+        <HaesIdentity />
         <Reviews />
         <Team />
         <FAQ />

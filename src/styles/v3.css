@@ -1,0 +1,659 @@
+/* ================================================================
+   v3 — refinamento editorial (navbar, gravuras, convite, guia, localização)
+   Carregado por último: sobrepõe layout.css e sections.css onde necessário.
+   ================================================================ */
+
+/* ---------- Navbar editorial: sem cápsula de vidro ---------- */
+
+:root {
+  --nav-top: 0px;
+  --nav-height: 64px;
+}
+
+@media (min-width: 1100px) {
+  :root {
+    --nav-top: 0px;
+    --nav-height: 76px;
+  }
+}
+
+.nav {
+  inset: 0 0 auto;
+  padding-inline: 0;
+}
+
+.nav__bar {
+  max-width: none;
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding-inline: max(var(--gutter), calc((100vw - 1360px) / 2));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition:
+    height 240ms var(--ease-out),
+    background-color 280ms ease,
+    border-color 280ms ease,
+    color 280ms ease;
+}
+
+/* Sobre o hero: fundo só o suficiente para contraste nas três fotos */
+.nav--over .nav__bar {
+  background: linear-gradient(180deg, rgb(15 26 19 / 0.5) 0%, rgb(15 26 19 / 0.18) 70%, rgb(15 26 19 / 0) 100%);
+  border-bottom-color: rgb(248 245 236 / 0.16);
+  color: #f8f5ec;
+}
+
+/* Depois do hero: barra compacta nas cores do tema */
+.nav--solid .nav__bar {
+  height: 60px;
+  background: color-mix(in srgb, var(--bg) 95%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom-color: var(--border);
+  box-shadow: none;
+  color: var(--text);
+}
+
+.nav--solid .nav__logo .haes-logo__img {
+  height: 30px;
+}
+
+.nav__links a {
+  position: relative;
+  padding: 0 12px;
+  border-radius: 0;
+  font-size: 0.9063rem;
+  letter-spacing: 0.01em;
+  opacity: 0.86;
+  transition: opacity 160ms ease;
+}
+
+.nav__links a:hover {
+  background: none;
+  opacity: 1;
+}
+
+/* estado ativo: sublinhado curto */
+.nav__links a::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  bottom: 9px;
+  width: 0;
+  height: 1.5px;
+  background: currentColor;
+  transition: width 220ms var(--ease-out);
+}
+
+.nav__links a:hover::after {
+  width: 14px;
+}
+
+.nav__links a.is-active {
+  opacity: 1;
+}
+
+.nav__links a.is-active::after {
+  width: 18px;
+  background: #c7ad7e;
+}
+
+.nav--solid .nav__links a.is-active::after {
+  background: var(--gold);
+}
+
+.nav__menu-btn,
+.nav__icon-link {
+  border: 0;
+  border-radius: 12px;
+}
+
+.nav__menu-btn:hover,
+.nav__icon-link:hover {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+/* Seletor de tema: moldura mais simples, folha preservada, alvo de 44 px mantido */
+.theme-switch__track {
+  inset: 7px 0;
+  padding-inline: 11px;
+  background: transparent;
+  border-color: color-mix(in srgb, currentColor 22%, transparent);
+  color: inherit;
+}
+
+.theme-switch__icon {
+  opacity: 0.7;
+}
+
+.nav--over .theme-switch__track {
+  background: transparent;
+  border-color: rgb(248 245 236 / 0.32);
+}
+
+.nav__panel-theme .theme-switch {
+  color: var(--text);
+}
+
+.nav__panel {
+  padding-top: calc(var(--nav-height) + 24px);
+}
+
+/* ---------- Cards de tratamento com gravuras ---------- */
+
+.tcard__panel {
+  isolation: isolate;
+}
+
+.tcard__art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tcard__panel--green,
+[data-theme='dark'] .tcard__panel--green {
+  background: #1c3324;
+  color: #f8f5ec;
+  box-shadow: none;
+}
+
+.tcard__panel--ivory {
+  color: #243c2d;
+}
+
+.tcard__panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* véu apenas onde há texto: rótulo no topo, palavra na base */
+.tcard__panel--green::after {
+  background:
+    linear-gradient(0deg, rgb(20 36 26 / 0.8) 0%, rgb(20 36 26 / 0) 42%),
+    linear-gradient(180deg, rgb(20 36 26 / 0.55) 0%, rgb(20 36 26 / 0) 28%);
+}
+
+.tcard__panel--ivory::after {
+  background:
+    linear-gradient(0deg, rgb(248 245 236 / 0.92) 0%, rgb(248 245 236 / 0) 40%),
+    linear-gradient(180deg, rgb(248 245 236 / 0.8) 0%, rgb(248 245 236 / 0) 26%);
+}
+
+.tcard__category {
+  opacity: 1;
+}
+
+.tcard__panel--count {
+  display: grid;
+  align-content: end;
+  gap: 4px;
+  padding: 22px;
+}
+
+.tcard__panel--count .tcard__count {
+  color: #c7ad7e;
+}
+
+.tcard__panel--count .tcard__count-label {
+  color: rgb(248 245 236 / 0.92);
+}
+
+/* ---------- Pausa editorial entre tratamentos e catálogo ---------- */
+
+.invite-band {
+  padding-block: clamp(3.5rem, 2.5rem + 4vw, 7rem);
+  background: var(--surface);
+  transition: background-color var(--theme-duration) ease;
+}
+
+[data-theme='dark'] .invite-band {
+  background: #10201a;
+}
+
+.invite-band__grid {
+  display: grid;
+  gap: 36px;
+  align-items: center;
+}
+
+.invite-band__copy {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
+
+.invite-band__copy h2 {
+  max-width: 14ch;
+}
+
+.invite-band__text {
+  color: var(--text-soft);
+  max-width: 42ch;
+}
+
+.invite-band__media {
+  margin: 0;
+  border-radius: 28px;
+  overflow: hidden;
+  aspect-ratio: 900 / 720;
+  background: var(--placeholder);
+}
+
+.invite-band__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 900px) {
+  .invite-band__grid {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(48px, 6vw, 112px);
+  }
+}
+
+/* ---------- Catálogo como guia ilustrado ---------- */
+
+.catalog__head {
+  display: grid;
+  gap: 14px;
+  max-width: 640px;
+  margin-bottom: clamp(2rem, 1.4rem + 2vw, 3rem);
+}
+
+.catalog__head p {
+  color: var(--text-soft);
+}
+
+.guide {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  gap: clamp(32px, 4vw, 72px);
+  align-items: start;
+}
+
+.guide__index {
+  display: grid;
+  border-top: 1px solid var(--border);
+}
+
+.guide__tab {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  column-gap: 10px;
+  row-gap: 4px;
+  align-items: baseline;
+  width: 100%;
+  padding: 22px 6px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  text-align: left;
+  color: var(--text-soft);
+}
+
+.guide__num {
+  font-weight: 500;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.guide__tab-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.875rem);
+  line-height: 1.2;
+  color: color-mix(in srgb, var(--text) 58%, var(--bg));
+  transition: color 180ms ease;
+}
+
+.guide__tab-count {
+  grid-column: 2;
+  font-size: 0.875rem;
+}
+
+.guide__tab:hover .guide__tab-title,
+.guide__tab.is-active .guide__tab-title {
+  color: var(--text);
+}
+
+.guide__tab.is-active .guide__num {
+  color: var(--gold);
+}
+
+/* indicador do caminho ativo: filete dourado sobre a linha */
+.guide__tab.is-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 64px;
+  height: 2px;
+  background: var(--gold);
+}
+
+.guide__tab:focus-visible {
+  outline-offset: -2px;
+}
+
+.guide__panel {
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--surface);
+  transition: background-color var(--theme-duration) ease;
+}
+
+.guide__panel:focus-visible {
+  outline-offset: 4px;
+  border-radius: 28px;
+}
+
+.guide__art,
+.guide-acc__art {
+  aspect-ratio: 16 / 9;
+  background: #1c3324;
+  overflow: hidden;
+}
+
+.guide__art img,
+.guide-acc__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.guide__body {
+  display: grid;
+  gap: 10px;
+  padding: clamp(24px, 3vw, 40px);
+}
+
+.guide__title {
+  font-size: clamp(1.625rem, 1.3rem + 1vw, 2.25rem);
+}
+
+.guide__lead {
+  color: var(--text-soft);
+  margin-bottom: 8px;
+}
+
+.guide__items {
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.guide__items > li {
+  border-bottom: 1px solid var(--border);
+}
+
+.guide__item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 68px;
+  padding: 12px 2px;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: var(--text);
+}
+
+.guide__item-text {
+  display: grid;
+  gap: 2px;
+}
+
+.guide__item-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+.guide__item-info {
+  font-size: 0.9063rem;
+  color: var(--text-soft);
+}
+
+.guide__arrow {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms var(--ease-out);
+}
+
+.guide__item:hover .guide__arrow {
+  background: var(--cta-bg);
+  color: var(--cta-text);
+  transform: translateX(3px);
+}
+
+.guide__options {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  padding: 0 0 14px;
+}
+
+.guide__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 0.3em;
+}
+
+/* celular: acordeão */
+.guide-acc {
+  border-top: 1px solid var(--border);
+}
+
+.guide-acc__item {
+  border-bottom: 1px solid var(--border);
+}
+
+.guide-acc__heading {
+  margin: 0;
+  font: inherit;
+}
+
+.guide-acc__button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 68px;
+  padding: 14px 2px;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: var(--text);
+}
+
+.guide-acc__title {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+
+.guide-acc__item.is-open .guide__num {
+  color: var(--gold);
+}
+
+.guide-acc__item.is-open .chevron {
+  transform: rotate(180deg);
+}
+
+.guide-acc__panel {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+.guide-acc__panel[hidden] {
+  display: none;
+}
+
+.guide-acc__art {
+  border-radius: 18px;
+}
+
+/* ---------- Localização com mapa e fachada ---------- */
+
+.loc {
+  display: grid;
+  gap: 32px;
+  grid-template-areas:
+    'intro'
+    'media'
+    'info';
+}
+
+.loc__intro {
+  grid-area: intro;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.loc__info {
+  grid-area: info;
+  display: grid;
+  gap: 28px;
+}
+
+.loc__media {
+  grid-area: media;
+  display: grid;
+  gap: 16px;
+}
+
+.loc__map,
+.loc__photo {
+  aspect-ratio: 5 / 4;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--placeholder);
+}
+
+.loc__map iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.loc__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 960px) {
+  .loc {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'intro info'
+      'media media';
+    column-gap: clamp(48px, 6vw, 112px);
+    row-gap: 40px;
+  }
+  .loc__media {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+  .loc__map,
+  .loc__photo {
+    aspect-ratio: auto;
+    height: clamp(360px, 34vw, 480px);
+  }
+}
+
+/* ---------- Convite do FAQ com gravura e WhatsApp direto ---------- */
+
+.invite__media img {
+  object-position: 72% 18%;
+}
+
+.invite__actions {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.invite__wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 6px;
+  color: #f8f5ec;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: rgb(199 173 126 / 0.7);
+  text-underline-offset: 0.3em;
+}
+
+/* ícone de WhatsApp alinhado em botões e links */
+.btn svg,
+.footer__icon svg,
+.nav__icon-link svg,
+.invite__wa svg {
+  flex: none;
+  display: block;
+}
+
+.invite-band__reveal {
+  height: 100%;
+  clip-path: inset(0 0 0 100%);
+  transition: clip-path 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.invite-band__media.is-revealed .invite-band__reveal {
+  clip-path: inset(0 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-band__reveal {
+    clip-path: none;
+    transition: none;
+  }
+}
+
+/* guia: gravura mais baixa para a lista do grupo caber junto */
+.guide__art {
+  aspect-ratio: 2 / 1;
+}
+
+/* alvo de toque de 44 px nos links de contato do rodapé, sem mudar o layout */
+.footer__contacts a {
+  display: inline-block;
+  padding-block: 12px;
+  margin-block: -12px;
+}

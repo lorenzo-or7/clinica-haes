@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { clinic, photos, reviews } from '../data/clinic';
-import { Photo } from './ui/Photo';
+import { googlePlace, reviews } from '../data/clinic';
 import { Reveal } from './ui/Reveal';
-import { ArrowLeft, ArrowRight, Star } from './ui/Icons';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Star } from './ui/Icons';
 
 /**
- * Depoimentos em composição editorial: foto do ambiente à esquerda (não é o autor),
- * citação ampla à direita com controles discretos. Todas as citações ocupam a mesma célula
- * de grade, então a altura do painel é a da maior e não salta na troca.
+ * Avaliações em bloco editorial compacto: um depoimento por vez, autor e controles logo
+ * abaixo, nota e link do Google no topo. Sem foto e sem alturas mínimas: o espaço reservado
+ * é só o da maior citação (as citações ocupam a mesma célula da grade).
  */
 export function Reviews() {
   const reduce = useReducedMotion();
@@ -18,68 +17,73 @@ export function Reviews() {
   const current = reviews[index];
 
   return (
-    <section id="avaliacoes" className="section reviews" aria-labelledby="reviews-title">
-      <div className="container">
-        <Reveal className="center-head">
-          <p className="eyebrow eyebrow--center">Avaliações</p>
-          <h2 id="reviews-title">O que dizem sobre a HAES.</h2>
-          <p className="reviews__rating">
-            <span className="reviews__stars" role="img" aria-label={`Nota ${clinic.rating} de 5`}>
-              {Array.from({ length: 5 }, (_, i) => (
-                <Star key={i} width={16} height={16} />
-              ))}
-            </span>
-            <span>
-              <strong>{clinic.rating}</strong> nas avaliações de pacientes
-            </span>
-          </p>
+    <section id="avaliacoes" className="section section--tight reviews2" aria-labelledby="reviews-title">
+      <div className="container reviews2__wrap">
+        <Reveal className="reviews2__head" y={20}>
+          <div>
+            <p className="eyebrow">Avaliações</p>
+            <h2 id="reviews-title">O que dizem sobre a HAES.</h2>
+          </div>
+          <div className="reviews2__score">
+            <p className="reviews2__rating">
+              <span className="reviews2__stars" role="img" aria-label={`Nota ${googlePlace.rating} de 5`}>
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Star key={i} width={15} height={15} />
+                ))}
+              </span>
+              <span>
+                <strong>{googlePlace.rating}</strong> no Google · {googlePlace.reviews} avaliações
+              </span>
+            </p>
+            <a className="text-link" href={googlePlace.url} target="_blank" rel="noopener noreferrer">
+              Ver avaliações no Google
+              <span className="sr-only"> (abre em nova aba)</span>
+              <ArrowUpRight width={16} height={16} />
+            </a>
+          </div>
         </Reveal>
 
-        <Reveal className="reviews__layout" y={32}>
-          <div className="reviews__photo">
-            <Photo photo={photos.detalhes} decorative sizes="(min-width: 900px) 34vw, 100vw" />
+        <Reveal className="reviews2__card" y={24} delay={0.08}>
+          <span className="reviews2__mark" aria-hidden="true">
+            “
+          </span>
+          <div className="reviews2__stage">
+            {/* reserva só a altura da maior citação, sem saltos na troca */}
+            {reviews.map((r) => (
+              <figure key={r.author} className="reviews2__ghost" aria-hidden="true">
+                <blockquote>
+                  <p>{r.text}</p>
+                </blockquote>
+                <figcaption>— {r.author}</figcaption>
+              </figure>
+            ))}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.figure
+                key={current.author}
+                className="reviews2__quote"
+                aria-live="polite"
+                initial={reduce ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduce ? { opacity: 0, transition: { duration: 0 } } : { opacity: 0, y: -6 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <blockquote>
+                  <p>{current.text}</p>
+                </blockquote>
+                <figcaption>— {current.author}</figcaption>
+              </motion.figure>
+            </AnimatePresence>
           </div>
-          <div className="reviews__panel">
-            <span className="reviews__mark" aria-hidden="true">
-              “
-            </span>
-            <div className="reviews__stage" aria-live="polite">
-              {/* espaço reservado pela maior citação */}
-              {reviews.map((r) => (
-                <figure key={r.author} className="reviews__ghost" aria-hidden="true">
-                  <blockquote>
-                    <p>{r.text}</p>
-                  </blockquote>
-                  <figcaption>— {r.author}</figcaption>
-                </figure>
-              ))}
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.figure
-                  key={current.author}
-                  className="reviews__quote"
-                  initial={reduce ? false : { opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={reduce ? { opacity: 0, transition: { duration: 0 } } : { opacity: 0, y: -8 }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <blockquote>
-                    <p>{current.text}</p>
-                  </blockquote>
-                  <figcaption>— {current.author}</figcaption>
-                </motion.figure>
-              </AnimatePresence>
-            </div>
-            <div className="reviews__controls">
-              <button type="button" className="round-btn" aria-label="Depoimento anterior" onClick={() => go(-1)}>
-                <ArrowLeft width={18} height={18} />
-              </button>
-              <p className="reviews__count" aria-hidden="true">
-                {String(index + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
-              </p>
-              <button type="button" className="round-btn" aria-label="Próximo depoimento" onClick={() => go(1)}>
-                <ArrowRight width={18} height={18} />
-              </button>
-            </div>
+          <div className="reviews2__controls">
+            <p className="reviews2__count" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
+            </p>
+            <button type="button" className="round-btn" aria-label="Depoimento anterior" onClick={() => go(-1)}>
+              <ArrowLeft width={18} height={18} />
+            </button>
+            <button type="button" className="round-btn" aria-label="Próximo depoimento" onClick={() => go(1)}>
+              <ArrowRight width={18} height={18} />
+            </button>
           </div>
         </Reveal>
       </div>

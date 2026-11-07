@@ -107,3 +107,75 @@ export function useSectionProgress(ref: RefObject<HTMLElement | null>, mode: 'pi
   }, [ref, progress]);
   return progress;
 }
+
+/**
+ * Escreve o progresso de rolagem de um elemento numa variável CSS (padrão --p, 0→1).
+ * p = 0 quando o topo do elemento está em start×altura da viewport; p = 1 quando a base
+ * chega a end×altura. Atualização síncrona no evento de rolagem (sem rAF, sem setState) e
+ * só quando o valor muda: fora da tela o valor fica parado em 0 ou 1 e nada é escrito.
+ */
+export function useScrollVar(
+  ref: RefObject<HTMLElement | null>,
+  { start = 1, end = 0, name = '--p', enabled = true }: { start?: number; end?: number; name?: string; enabled?: boolean } = {},
+) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !enabled) return;
+    let last = -1;
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const span = (start - end) * vh + rect.height;
+      const raw = span > 0 ? (start * vh - rect.top) / span : 1;
+      const p = Math.round(Math.min(1, Math.max(0, raw)) * 1000) / 1000;
+      if (p !== last) {
+        last = p;
+        el.style.setProperty(name, String(p));
+      }
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [ref, start, end, name, enabled]);
+}
+
+/**
+ * true depois que o elemento entra na viewport (uma vez). Sem IntersectionObserver,
+ * ou se o observador não responder em 4 s depois de o elemento já estar visível,
+ * retorna true: o conteúdo nunca fica permanentemente escondido.
+ */
+export function useInViewOnce(ref: RefObject<HTMLElement | null>, threshold = 0.25) {
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) {
+      setSeen(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSeen(true);
+          io.disconnect();
+        }
+      },
+      { threshold },
+    );
+    io.observe(el);
+    // rede de segurança: se o elemento já está na tela e o observador falhar, revela mesmo assim
+    const safety = window.setTimeout(() => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) setSeen(true);
+    }, 4000);
+    return () => {
+      io.disconnect();
+      window.clearTimeout(safety);
+    };
+  }, [ref, threshold]);
+  return seen;
+}

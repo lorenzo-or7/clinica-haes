@@ -1,6 +1,7 @@
 import { clinic, gallery } from '../data/clinic';
 import { Photo } from './ui/Photo';
 import { Reveal } from './ui/Reveal';
+import { MaskReveal } from './ui/Motion';
 import { ArrowUpRight, Instagram } from './ui/Icons';
 
 /**
@@ -22,15 +23,21 @@ export function Gallery() {
           </a>
         </Reveal>
       </div>
-      <Reveal y={28}>
+      <div>
         <ul className="gallery__rail" aria-label="Fotos da clínica">
-          {gallery.map((photo) => (
+          {gallery.map(({ photo, position }, i) => (
             <li key={photo.sources[0]} className="gallery__item">
-              <Photo photo={photo} sizes="(min-width: 1100px) 20vw, (min-width: 640px) 34vw, 72vw" />
+              <MaskReveal from="bottom" delay={i * 90}>
+              <Photo
+                photo={photo}
+                sizes="(min-width: 1100px) 20vw, (min-width: 640px) 34vw, 72vw"
+                style={position ? { objectPosition: position } : undefined}
+              />
+              </MaskReveal>
             </li>
           ))}
         </ul>
-      </Reveal>
+      </div>
     </section>
   );
 }

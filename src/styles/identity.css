@@ -1,0 +1,350 @@
+/* ================================================================
+   A identidade HAES — capítulo próprio, ligado à rolagem (--p, 0→1).
+   Todas as fases são calculadas aqui a partir de uma única variável;
+   o JavaScript só escreve --p (sem re-render por quadro).
+   ================================================================ */
+
+.idc {
+  --p: 0;
+  /* fases */
+  /* desenho 0–0,28 · C 0,31–0,48 · H 0,50–0,67 · dourado 0,70–0,84 · pausa no final até 1 */
+  --draw: clamp(0, var(--p) / 0.28, 1);
+  --c-in: clamp(0, (var(--p) - 0.31) * 14, 1);
+  --c-out: clamp(0, (0.48 - var(--p)) * 14, 1);
+  --c: min(var(--c-in), var(--c-out));
+  --h-in: clamp(0, (var(--p) - 0.5) * 14, 1);
+  --h-out: clamp(0, (0.67 - var(--p)) * 14, 1);
+  --h: min(var(--h-in), var(--h-out));
+  --fin: clamp(0, (var(--p) - 0.7) * 7.14, 1);
+  --focus: max(var(--c), var(--h));
+
+  /* seção alta: o percurso extra é o "tempo" da animação enquanto o palco fica fixo */
+  position: relative;
+  height: 320svh;
+  background: #0f1d15;
+  color: #f8f5ec;
+}
+
+/* palco fixo na tela durante o percurso (sticky: rolagem nativa, sem sequestro) */
+.idc__pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  align-items: center;
+  isolation: isolate;
+  /* clip (e não hidden) para não quebrar o sticky */
+  overflow: clip;
+  padding-top: calc(var(--nav-height) + 12px);
+  padding-bottom: 24px;
+}
+
+/* luz ambiente que acompanha o símbolo e cresce no final */
+.idc__ambient {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 46% 60% at 70% 50%, rgb(199 173 126 / 0.22), transparent 70%),
+    radial-gradient(ellipse 80% 70% at 20% 100%, rgb(45 73 52 / 0.55), transparent 70%);
+  opacity: calc(0.35 + 0.65 * var(--fin));
+}
+
+.idc__grid {
+  display: grid;
+  gap: clamp(36px, 5vw, 80px);
+  align-items: center;
+}
+
+/* ---------- texto ---------- */
+
+.idc__copy {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+  position: relative;
+  z-index: 2;
+}
+
+.idc__eyebrow {
+  color: #f8f5ec;
+}
+
+.idc__eyebrow::before {
+  background: #c7ad7e;
+}
+
+.idc__title {
+  font-size: clamp(2.375rem, 1.5rem + 3vw, 4.25rem);
+  line-height: 1.04;
+  max-width: 12ch;
+}
+
+.idc__title em {
+  color: #e6cf9c;
+}
+
+.idc__text {
+  color: rgb(248 245 236 / 0.82);
+  max-width: 38ch;
+  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+}
+
+/* índice das fases: cada linha acende e preenche com o progresso */
+.idc__phases {
+  list-style: none;
+  display: grid;
+  gap: 0;
+  width: min(100%, 360px);
+  margin-top: 10px;
+  border-top: 1px solid rgb(248 245 236 / 0.14);
+}
+
+.idc__phase {
+  --x: 0;
+  --on: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px 64px 1fr;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px 0 13px;
+  border-bottom: 1px solid rgb(248 245 236 / 0.14);
+  opacity: calc(0.38 + 0.62 * var(--on));
+}
+
+.idc__phase--1 {
+  --x: var(--c-in);
+  --on: var(--c);
+}
+
+.idc__phase--2 {
+  --x: var(--h-in);
+  --on: var(--h);
+}
+
+.idc__phase--3 {
+  --x: var(--fin);
+  --on: var(--fin);
+}
+
+.idc__phase-n {
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: rgb(248 245 236 / 0.6);
+  font-variant-numeric: tabular-nums;
+}
+
+.idc__phase-letter {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.375rem;
+  line-height: 1;
+  color: #e6cf9c;
+}
+
+.idc__phase-text {
+  font-size: 0.9375rem;
+}
+
+.idc__phase-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+}
+
+.idc__phase-bar span {
+  display: block;
+  height: 100%;
+  background: #c7ad7e;
+  transform-origin: left center;
+  transform: scaleX(var(--x));
+}
+
+/* ---------- palco do símbolo ---------- */
+
+.idc__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(280px, 40vw, 560px);
+}
+
+.idc__stage > * {
+  grid-area: 1 / 1;
+}
+
+.idc__symbol,
+.idc__glow {
+  width: min(100%, 640px);
+  aspect-ratio: 395 / 250;
+  height: auto;
+}
+
+.idc__symbol {
+  position: relative;
+  z-index: 3;
+  overflow: visible;
+  transform: scale(calc(0.88 + 0.06 * var(--draw) + 0.06 * var(--fin)));
+  transform-origin: 50% 60%;
+}
+
+/* camadas recortadas pelos pixels do símbolo */
+.idc__base {
+  fill: #f8f5ec;
+  opacity: 0.1;
+}
+
+.idc__stroke {
+  stroke-dasharray: 1;
+  /* cada guia leva ~0,08 de progresso; as 15 entram em sequência */
+  stroke-dashoffset: calc(1 - clamp(0, (var(--p) - var(--i) * 0.015) * 14, 1));
+}
+
+.idc__drawn {
+  fill: #c7ad7e;
+  /* durante C e H o restante esmaece para a letra aparecer */
+  opacity: calc(0.92 - 0.7 * var(--focus) - 0.92 * var(--fin));
+}
+
+.idc__c,
+.idc__h {
+  fill: #f1dcaa;
+}
+
+.idc__c {
+  opacity: var(--c);
+}
+
+.idc__h {
+  opacity: var(--h);
+}
+
+.idc__gold {
+  opacity: var(--fin);
+}
+
+/* aura desfocada ao longo do C e do H */
+.idc__aura {
+  stroke: #f1dcaa;
+}
+
+.idc__aura--c {
+  opacity: calc(0.75 * var(--c));
+}
+
+.idc__aura--h {
+  opacity: calc(0.75 * var(--h));
+}
+
+/* halo dourado: cópia desfocada do símbolo (filtro estático, só a opacidade muda) */
+.idc__glow {
+  position: relative;
+  z-index: 2;
+  background: #e6cf9c;
+  -webkit-mask: var(--symbol-mask) center / contain no-repeat;
+  mask: var(--symbol-mask) center / contain no-repeat;
+  filter: blur(18px);
+  opacity: calc(0.65 * var(--fin));
+  transform: scale(calc(0.88 + 0.06 * var(--draw) + 0.06 * var(--fin)));
+  transform-origin: 50% 60%;
+}
+
+/* letras gigantes em contorno, atrás do símbolo */
+.idc__ghost {
+  z-index: 1;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(18rem, 44vw, 46rem);
+  line-height: 0.8;
+  color: rgb(199 173 126 / 0.05);
+  -webkit-text-stroke: 2px rgb(222 196 146 / 0.75);
+  pointer-events: none;
+  user-select: none;
+}
+
+.idc__ghost--c {
+  opacity: var(--c);
+  transform: translate3d(calc(-6% + 6% * var(--c-in)), 0, 0) scale(calc(0.9 + 0.1 * var(--c-in)));
+}
+
+.idc__ghost--h {
+  opacity: var(--h);
+  transform: translate3d(calc(6% - 6% * var(--h-in)), 0, 0) scale(calc(0.9 + 0.1 * var(--h-in)));
+}
+
+/* anel que se expande quando o símbolo assume o dourado */
+.idc__ring {
+  z-index: 1;
+  width: min(100%, 640px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgb(199 173 126 / 0.7);
+  opacity: calc(var(--fin) * (1 - var(--fin)) * 2.4);
+  transform: scale(calc(0.45 + 0.75 * var(--fin)));
+}
+
+@media (min-width: 900px) {
+  .idc__grid {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+}
+
+/* celular: palco antes do texto, efeitos mais leves */
+@media (max-width: 899px) {
+  .idc {
+    height: 260svh;
+  }
+  .idc__pin {
+    align-items: start;
+    padding-top: calc(var(--nav-height) + 8px);
+  }
+  .idc__grid {
+    gap: 12px;
+  }
+  .idc__phases {
+    margin-top: 2px;
+  }
+  .idc__phase {
+    padding-block: 8px 9px;
+  }
+  .idc__stage {
+    order: -1;
+    min-height: 0;
+    padding-block: 12px;
+  }
+  .idc__ghost {
+    font-size: clamp(14rem, 76vw, 22rem);
+  }
+  .idc__glow {
+    filter: blur(12px);
+  }
+}
+
+/* movimento reduzido: estado final (símbolo dourado completo), sem letras nem anel */
+@media (prefers-reduced-motion: reduce) {
+  .idc {
+    --p: 1 !important;
+    height: auto;
+  }
+  .idc__pin {
+    position: relative;
+    height: auto;
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+  }
+  .idc__ghost,
+  .idc__ring,
+  .idc__aura {
+    display: none;
+  }
+  .idc__phase {
+    opacity: 1;
+  }
+  .idc__phase-bar span {
+    transform: scaleX(1);
+  }
+}

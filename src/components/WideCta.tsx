@@ -1,40 +1,55 @@
 import { useRef } from 'react';
-import { motion, useReducedMotion, useTransform } from 'motion/react';
-import { useSectionProgress } from '../lib/hooks';
-import { photos } from '../data/clinic';
-import { Photo } from './ui/Photo';
+import { useReducedMotion } from 'motion/react';
+import { asset } from '../data/clinic';
+import { supportsObserver, useInViewOnce } from '../lib/hooks';
 import { Reveal } from './ui/Reveal';
+import { Parallax } from './ui/Motion';
 import { ArrowRight } from './ui/Icons';
 
 /**
- * CTA fotográfico de largura ampla (papel do bloco equivalente da referência).
- * Entrada por fade-up do conteúdo, como observado. O deslocamento leve da foto com a
- * rolagem é uma aproximação: o parallax da referência não foi medido.
+ * Pausa editorial entre tratamentos e catálogo: texto e botão de um lado, recorte da foto
+ * da parede do outro, com o símbolo inteiro e livre de texto. A foto se revela pela lateral
+ * uma única vez; com movimento reduzido aparece direto.
  */
 export function WideCta() {
   const reduce = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
-  const scrollYProgress = useSectionProgress(ref, 'pass');
-  const y = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
+  const animate = !reduce && supportsObserver();
+  const mediaRef = useRef<HTMLElement>(null);
+  // revelação única; o hook revela mesmo se o observador falhar
+  const seen = useInViewOnce(mediaRef, 0.3);
+  const revealed = !animate || seen;
+
+  const image = (
+    <img
+      src={asset('photos/parede-recorte.webp')}
+      alt="Símbolo da HAES em metal na parede da clínica"
+      width={900}
+      height={720}
+      loading="lazy"
+      decoding="async"
+    />
+  );
 
   return (
-    <section className="wide-cta" aria-labelledby="wide-cta-title">
-      <div className="wide-cta__frame" ref={ref}>
-        <motion.div className="wide-cta__media" style={reduce ? undefined : { y }}>
-          <Photo photo={photos.simboloParede} decorative sizes="100vw" style={{ objectPosition: '40% 46%' }} />
-        </motion.div>
-        <div className="wide-cta__shade" aria-hidden="true" />
-        <Reveal className="wide-cta__content" y={30} duration={0.9}>
-          <p className="wide-cta__eyebrow">Pré-agendamento</p>
-          <h2 id="wide-cta-title">
-            Seu próximo cuidado <em>começa aqui.</em>
-          </h2>
-          <p className="wide-cta__text">Escolha o assunto, indique uma data se quiser e envie pelo WhatsApp.</p>
-          <a className="btn btn--light" href="#pre-agendamento">
+    <section className="invite-band" aria-labelledby="invite-band-title">
+      <div className="container invite-band__grid">
+        <Reveal className="invite-band__copy" y={24}>
+          <p className="eyebrow">Pré-agendamento</p>
+          <h2 id="invite-band-title">Uma conversa é o primeiro passo.</h2>
+          <p className="invite-band__text">
+            Diga o que você procura e, se quiser, indique uma data. A equipe confirma pelo WhatsApp.
+          </p>
+          <a className="btn btn--primary" href="#pre-agendamento">
             Solicitar avaliação
             <ArrowRight />
           </a>
         </Reveal>
+
+        <figure ref={mediaRef} className={`invite-band__media ${revealed ? 'is-revealed' : ''}`}>
+          <div className="invite-band__reveal">
+            <Parallax amount={8}>{image}</Parallax>
+          </div>
+        </figure>
       </div>
     </section>
   );

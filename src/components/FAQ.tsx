@@ -1,9 +1,9 @@
 import { useId, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { clinic, faq, firstVisitSteps, photos } from '../data/clinic';
-import { Photo } from './ui/Photo';
+import { asset, clinic, faq, firstVisitSteps, whatsappUrl } from '../data/clinic';
 import { Reveal } from './ui/Reveal';
-import { ArrowRight, ChevronDown } from './ui/Icons';
+import { Parallax } from './ui/Motion';
+import { ArrowRight, ChevronDown, WhatsApp } from './ui/Icons';
 
 /**
  * FAQ (perguntas de um lado) + convite visual para conversar (do outro), como na referência.
@@ -25,14 +25,15 @@ export function FAQ() {
         </Reveal>
 
         <Reveal className="invite" y={32}>
+          {/* gravura botânica no lugar de mais uma foto repetida da recepção */}
           <div className="invite__media" aria-hidden="true">
-            <Photo photo={photos.recepcao} decorative sizes="(min-width: 1024px) 40vw, 100vw" />
+            <Parallax amount={10}>
+              <img src={asset('arts/catalogo-1200.webp')} alt="" width={1312} height={1199} loading="lazy" decoding="async" />
+            </Parallax>
           </div>
           <div className="invite__shade" aria-hidden="true" />
           <div className="invite__content">
-            <p className="invite__meta">
-              WhatsApp {clinic.whatsapp.display} · Seg. a sex., 08h às 18h
-            </p>
+            <p className="invite__meta">Segunda a sexta, 08h às 18h</p>
             <h3 className="invite__title">Vamos conversar sobre sua avaliação?</h3>
             <ol className="invite__steps">
               {firstVisitSteps.map((s, i) => (
@@ -42,10 +43,17 @@ export function FAQ() {
                 </li>
               ))}
             </ol>
-            <a className="btn btn--light" href="#pre-agendamento">
-              Ir para o pré-agendamento
-              <ArrowRight />
-            </a>
+            <div className="invite__actions">
+              <a className="btn btn--light" href="#pre-agendamento">
+                Ir para o pré-agendamento
+                <ArrowRight />
+              </a>
+              <a className="invite__wa" href={whatsappUrl()} target="_blank" rel="noopener noreferrer">
+                <WhatsApp width={18} height={18} />
+                {clinic.whatsapp.display}
+                <span className="sr-only"> — conversar pelo WhatsApp (abre em nova aba)</span>
+              </a>
+            </div>
           </div>
         </Reveal>
       </div>

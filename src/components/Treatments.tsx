@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
-import { asset, brand, featuredTreatments, treatmentCategories, type Treatment } from '../data/clinic';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { asset, featuredTreatments, treatmentCategories, type Treatment } from '../data/clinic';
 import { Reveal } from './ui/Reveal';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Close } from './ui/Icons';
 
@@ -8,7 +8,34 @@ type Props = {
   onRequest: (treatment: string) => void;
 };
 
-const TONES = ['green', 'ivory', 'gold'] as const;
+/**
+ * Gravuras próprias (assets-fornecidos: clareamento, toxina, preenchimento, catalogo).
+ * Decorativas: o card já nomeia o tratamento. Recorte individual por object-position.
+ */
+const ART: Record<string, { file: string; tone: 'green' | 'ivory'; position: string }> = {
+  clareamento: { file: 'clareamento', tone: 'green', position: '70% 46%' },
+  toxina: { file: 'toxina', tone: 'ivory', position: '74% 40%' },
+  preenchimento: { file: 'preenchimento', tone: 'green', position: '76% 42%' },
+};
+
+const artSrcSet = (file: string) => `${asset(`arts/${file}-720.webp`)} 720w, ${asset(`arts/${file}-1200.webp`)} 1200w`;
+
+function Art({ file, position }: { file: string; position: string }) {
+  return (
+    <img
+      className="tcard__art"
+      src={asset(`arts/${file}-720.webp`)}
+      srcSet={artSrcSet(file)}
+      sizes="(min-width: 640px) 330px, 82vw"
+      alt=""
+      width={1312}
+      height={1199}
+      loading="lazy"
+      decoding="async"
+      style={{ objectPosition: position }}
+    />
+  );
+}
 
 /**
  * Destaques em trilho horizontal (hierarquia da referência: título + link lateral, cards com
@@ -76,10 +103,6 @@ export function Treatments({ onRequest }: Props) {
     onRequest(name);
   };
 
-  const maskStyle = {
-    '--symbol-mask': `url("${new URL(asset(brand.symbol.src), document.baseURI).href}")`,
-  } as CSSProperties;
-
   return (
     <section id="tratamentos" className="section treatments" aria-labelledby="treatments-title">
       <div className="container">
@@ -100,7 +123,7 @@ export function Treatments({ onRequest }: Props) {
 
       <Reveal className="rail-wrap" y={32}>
         <ul className="rail" ref={railRef} aria-label="Tratamentos em destaque">
-          {featuredTreatments.map((t, i) => (
+          {featuredTreatments.map((t) => (
             <li key={t.id} className="tcard">
               <button
                 type="button"
@@ -108,9 +131,9 @@ export function Treatments({ onRequest }: Props) {
                 aria-haspopup="dialog"
                 onClick={(e) => open(t, e.currentTarget)}
               >
-                <span className={`tcard__panel tcard__panel--${TONES[i % TONES.length]}`} aria-hidden="true">
+                <span className={`tcard__panel tcard__panel--${ART[t.id]?.tone ?? 'green'}`} aria-hidden="true">
+                  {ART[t.id] && <Art file={ART[t.id].file} position={ART[t.id].position} />}
                   <span className="tcard__category">{t.category}</span>
-                  <span className="tcard__symbol" style={maskStyle} />
                   <span className="tcard__word">{t.name.split(' ')[0]}</span>
                 </span>
                 <span className="tcard__bar">
@@ -125,7 +148,8 @@ export function Treatments({ onRequest }: Props) {
           ))}
           <li className="tcard tcard--more">
             <a className="tcard__button" href="#catalogo">
-              <span className="tcard__panel tcard__panel--outline" aria-hidden="true">
+              <span className="tcard__panel tcard__panel--green tcard__panel--count">
+                <Art file="catalogo" position="80% 30%" />
                 <span className="tcard__count">{treatmentCategories.length}</span>
                 <span className="tcard__count-label">categorias de tratamento</span>
               </span>
